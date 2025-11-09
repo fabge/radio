@@ -1,0 +1,54 @@
+name: Record Barakan Beat
+
+on:
+  schedule:
+    # Every Sunday at 13:05 UTC (22:05 JST)
+    - cron: '5 13 * * 0'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl libxml2-utils ffmpeg
+
+      - name: Calculate recording date (JST)
+        id: date
+        run: |
+          # Get current date in JST (UTC+9) in format DD.MM.YYYY
+          JST_DATE_DDMMYYYY=$(TZ=Asia/Tokyo date +%d.%m.%Y)
+          JST_DATE_YYYYMMDD=$(TZ=Asia/Tokyo date +%Y%m%d)
+          echo "date_ddmmyyyy=$JST_DATE_DDMMYYYY" >> $GITHUB_OUTPUT
+          echo "date_yyyymmdd=$JST_DATE_YYYYMMDD" >> $GITHUB_OUTPUT
+          echo "Recording date (JST): $JST_DATE_DDMMYYYY"
+
+      - name: Record Barakan Beat
+        run: |
+          DATE_YYYYMMDD="${{ steps.date.outputs.date_yyyymmdd }}"
+          DATE_DDMMYYYY="${{ steps.date.outputs.date_ddmmyyyy }}"
+          START_TIME="${DATE_YYYYMMDD}1800"
+          OUTPUT_FILE="audio/${DATE_DDMMYYYY}.m4a"
+
+          ./rec_radiko_ts.sh \
+            -s INT \
+            -f "$START_TIME" \
+            -d 120 \
+            -o "$OUTPUT_FILE"
+
+      - name: Commit and push if new file
+        if: success()
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add audio/*.m4a
+          git diff --staged --quiet || (git commit -m "Record Barakan Beat for ${{ steps.date.outputs.date_ddmmyyyy }}" && git push)
