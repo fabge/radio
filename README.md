@@ -2,4 +2,4 @@
 
 This is a collection of radio recordings of Barakan Beat, a radio show by [Peter Barakan](https://peterbarakan.net/).
 
-![Barakan Beat 02.11.2025 18:00](./INT_202511021800_202511022000.m4a)
+<audio src="/INT_202511021800_202511022000.m4a" preload="none" controls=""></audio>
