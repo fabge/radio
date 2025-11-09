@@ -51,11 +51,7 @@ jobs:
           START_TIME="${DATE_YYYYMMDD}1800"
           OUTPUT_FILE="audio/${DATE_DDMMYYYY}.m4a"
 
-          # Make script executable
-          chmod +x rec_radiko_ts.sh
-
-          # Run with bash -x for debugging (shows each command)
-          bash -x ./rec_radiko_ts.sh \
+          ./rec_radiko_ts.sh \
             -s INT \
             -f "$START_TIME" \
             -d 120 \
