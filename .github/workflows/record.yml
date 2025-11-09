@@ -1,14 +1,15 @@
-name: Record Barakan Beat
+name: record barakan beat
 
 on:
   schedule:
     # Every Sunday at 13:05 UTC (22:05 JST)
     - cron: '5 13 * * 0'
-  workflow_dispatch: # Allow manual triggering
+  workflow_dispatch:
 
 jobs:
   record:
     runs-on: ubuntu-latest
+    timeout-minutes: 150  # 120 min recording + 30 min buffer for setup/processing
     permissions:
       contents: write
     steps:
@@ -20,7 +21,18 @@ jobs:
       - name: Set up environment
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl libxml2-utils ffmpeg
+          sudo apt-get install -y curl libxml2-utils ffmpeg wireguard
+
+      - name: Set up Mullvad VPN
+        run: |
+          # Create WireGuard config from secret
+          sudo mkdir -p /etc/wireguard
+          echo "${{ secrets.MULLVAD_WG_CONFIG }}" | sudo tee /etc/wireguard/wg0.conf > /dev/null
+          # Start WireGuard
+          sudo wg-quick up wg0
+          # Verify connection (check IP is from Japan)
+          sleep 3
+          curl -s https://ipinfo.io/json || echo "IP check failed"
 
       - name: Calculate recording date (JST)
         id: date
@@ -44,6 +56,11 @@ jobs:
             -f "$START_TIME" \
             -d 120 \
             -o "$OUTPUT_FILE"
+
+      - name: Disconnect VPN
+        if: always()
+        run: |
+          sudo wg-quick down wg0 || true
 
       - name: Commit and push if new file
         if: success()
