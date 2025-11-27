@@ -1,6 +1,6 @@
 # Barakan Beat
 
-This is a collection of recordings of Barakan Beat, a radio show by [Peter Barakan](https://peterbarakan.net/), updated weekly.
+This is a collection of recordings of Barakan Beat, a radio show by [Peter Barakan](https://peterbarakan.net/), updated each Sunday at 13:05 UTC.
 
 {% for file in site.static_files %}
 {% if file.extname == ".m4a" and file.path contains "/audio/" %}
