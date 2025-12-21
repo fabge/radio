@@ -19,25 +19,28 @@ for i, file in enumerate(files, 1):
     cog.outl(f'<audio id="player{i}" controls src="/{file}" preload="none"></audio>')
     cog.outl('')
 ]]] -->
+<p>Barakan Beat, 21.12.2025 (<a href="/audio/21.12.2025.m4a" download>download</a>)</p>
+<audio id="player1" controls src="/audio/21.12.2025.m4a" preload="none"></audio>
+
 <p>Barakan Beat, 14.12.2025 (<a href="/audio/14.12.2025.m4a" download>download</a>)</p>
-<audio id="player1" controls src="/audio/14.12.2025.m4a" preload="none"></audio>
+<audio id="player2" controls src="/audio/14.12.2025.m4a" preload="none"></audio>
 
 <p>Barakan Beat, 07.12.2025 (<a href="/audio/07.12.2025.m4a" download>download</a>)</p>
-<audio id="player2" controls src="/audio/07.12.2025.m4a" preload="none"></audio>
+<audio id="player3" controls src="/audio/07.12.2025.m4a" preload="none"></audio>
 
 <p>Barakan Beat, 30.11.2025 (<a href="/audio/30.11.2025.m4a" download>download</a>)</p>
-<audio id="player3" controls src="/audio/30.11.2025.m4a" preload="none"></audio>
+<audio id="player4" controls src="/audio/30.11.2025.m4a" preload="none"></audio>
 
 <p>Barakan Beat, 23.11.2025 (<a href="/audio/23.11.2025.m4a" download>download</a>)</p>
-<audio id="player4" controls src="/audio/23.11.2025.m4a" preload="none"></audio>
+<audio id="player5" controls src="/audio/23.11.2025.m4a" preload="none"></audio>
 
 <p>Barakan Beat, 16.11.2025 (<a href="/audio/16.11.2025.m4a" download>download</a>)</p>
-<audio id="player5" controls src="/audio/16.11.2025.m4a" preload="none"></audio>
+<audio id="player6" controls src="/audio/16.11.2025.m4a" preload="none"></audio>
 
 <p>Barakan Beat, 09.11.2025 (<a href="/audio/09.11.2025.m4a" download>download</a>)</p>
-<audio id="player6" controls src="/audio/09.11.2025.m4a" preload="none"></audio>
+<audio id="player7" controls src="/audio/09.11.2025.m4a" preload="none"></audio>
 
 <p>Barakan Beat, 02.11.2025 (<a href="/audio/02.11.2025.m4a" download>download</a>)</p>
-<audio id="player7" controls src="/audio/02.11.2025.m4a" preload="none"></audio>
+<audio id="player8" controls src="/audio/02.11.2025.m4a" preload="none"></audio>
 
 <!-- [[[end]]] -->
