@@ -21,7 +21,7 @@ jobs:
       - name: Set up environment
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl libxml2-utils ffmpeg wireguard
+          sudo apt-get install -y curl libxml2-utils ffmpeg wireguard jq
 
       - name: Set up Mullvad VPN
         run: |
@@ -30,9 +30,16 @@ jobs:
           echo "${{ secrets.MULLVAD_WG_CONFIG }}" | sudo tee /etc/wireguard/wg0.conf > /dev/null
           # Start WireGuard
           sudo wg-quick up wg0
-          # Verify connection (check IP is from Japan)
+          # Verify connection - must be from Japan for Radiko to work
           sleep 3
-          curl -s https://ipinfo.io/json || echo "IP check failed"
+          IP_INFO=$(curl -sf https://ipinfo.io/json) || { echo "Failed to check IP"; exit 1; }
+          echo "$IP_INFO"
+          COUNTRY=$(echo "$IP_INFO" | jq -r '.country')
+          if [ "$COUNTRY" != "JP" ]; then
+            echo "Error: VPN not connected to Japan (got: $COUNTRY). Radiko requires a Japanese IP."
+            exit 1
+          fi
+          echo "VPN connected to Japan successfully"
 
       - name: Calculate recording date (JST)
         id: date
