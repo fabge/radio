@@ -1,10 +1,49 @@
 # Barakan Beat
 
-This is a collection of recordings of Barakan Beat, a radio show by [Peter Barakan](https://peterbarakan.net/), updated weekly.
+This is a collection of recordings of Barakan Beat, a radio show by [Peter Barakan](https://peterbarakan.net/), updated each Sunday at 13:05 UTC.
 
-{% for file in site.static_files %}
-{% if file.extname == ".m4a" and file.path contains "/audio/" %}
-<p>Barakan Beat, {{ file.basename }} (<a href="{{ file.path }}" download>download</a>)</p>
-<audio id="player{{ forloop.index }}" controls src="{{ file.path }}" preload="none"></audio>
-{% endif %}
-{% endfor %}
+<!-- [[[cog
+import cog
+from pathlib import Path
+from datetime import datetime
+
+audio_dir = Path('audio')
+files = sorted(
+    audio_dir.glob('*.m4a'),
+    key=lambda f: datetime.strptime(f.stem, '%d.%m.%Y'),
+    reverse=True
+)
+
+for i, file in enumerate(files, 1):
+    cog.outl(f'<p>Barakan Beat, {file.stem} (<a href="/{file}" download>download</a>)</p>')
+    cog.outl(f'<audio id="player{i}" controls src="/{file}" preload="none"></audio>')
+    cog.outl('')
+]]] -->
+<p>Barakan Beat, 28.12.2025 (<a href="/audio/28.12.2025.m4a" download>download</a>)</p>
+<audio id="player1" controls src="/audio/28.12.2025.m4a" preload="none"></audio>
+
+<p>Barakan Beat, 21.12.2025 (<a href="/audio/21.12.2025.m4a" download>download</a>)</p>
+<audio id="player2" controls src="/audio/21.12.2025.m4a" preload="none"></audio>
+
+<p>Barakan Beat, 14.12.2025 (<a href="/audio/14.12.2025.m4a" download>download</a>)</p>
+<audio id="player3" controls src="/audio/14.12.2025.m4a" preload="none"></audio>
+
+<p>Barakan Beat, 07.12.2025 (<a href="/audio/07.12.2025.m4a" download>download</a>)</p>
+<audio id="player4" controls src="/audio/07.12.2025.m4a" preload="none"></audio>
+
+<p>Barakan Beat, 30.11.2025 (<a href="/audio/30.11.2025.m4a" download>download</a>)</p>
+<audio id="player5" controls src="/audio/30.11.2025.m4a" preload="none"></audio>
+
+<p>Barakan Beat, 23.11.2025 (<a href="/audio/23.11.2025.m4a" download>download</a>)</p>
+<audio id="player6" controls src="/audio/23.11.2025.m4a" preload="none"></audio>
+
+<p>Barakan Beat, 16.11.2025 (<a href="/audio/16.11.2025.m4a" download>download</a>)</p>
+<audio id="player7" controls src="/audio/16.11.2025.m4a" preload="none"></audio>
+
+<p>Barakan Beat, 09.11.2025 (<a href="/audio/09.11.2025.m4a" download>download</a>)</p>
+<audio id="player8" controls src="/audio/09.11.2025.m4a" preload="none"></audio>
+
+<p>Barakan Beat, 02.11.2025 (<a href="/audio/02.11.2025.m4a" download>download</a>)</p>
+<audio id="player9" controls src="/audio/02.11.2025.m4a" preload="none"></audio>
+
+<!-- [[[end]]] -->

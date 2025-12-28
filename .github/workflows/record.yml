@@ -69,10 +69,14 @@ jobs:
         run: |
           sudo wg-quick down wg0 || true
 
+      - name: Update README with cog
+        if: success()
+        run: cog -r README.md
+
       - name: Commit and push if new file
         if: success()
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add audio/*.m4a
+          git add audio/*.m4a README.md
           git diff --staged --quiet || (git commit -m "Record Barakan Beat for ${{ steps.date.outputs.date_ddmmyyyy }}" && git push)
