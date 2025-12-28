@@ -17,6 +17,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Set up environment
         run: |
@@ -80,3 +81,29 @@ jobs:
           git config --local user.name "GitHub Action"
           git add audio/*.m4a README.md
           git diff --staged --quiet || (git commit -m "Record Barakan Beat for ${{ steps.date.outputs.date_ddmmyyyy }}" && git push)
+
+      - name: Cleanup old recordings (keep last 5)
+        if: success()
+        run: |
+          FILE_COUNT=$(ls -1 audio/*.m4a 2>/dev/null | wc -l)
+          if [ "$FILE_COUNT" -le 5 ]; then
+            echo "Only $FILE_COUNT recordings, no cleanup needed"
+            exit 0
+          fi
+
+          # Get oldest files to remove
+          FILES_TO_REMOVE=$(ls -1t audio/*.m4a | tail -n +6)
+          echo "Removing old recordings from history:"
+          echo "$FILES_TO_REMOVE"
+
+          # Install git-filter-repo
+          pip install git-filter-repo
+
+          # Remove each old file from history
+          for file in $FILES_TO_REMOVE; do
+            git-filter-repo --path "$file" --invert-paths --force
+          done
+
+          # Re-add remote and force push
+          git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git push --force origin main
