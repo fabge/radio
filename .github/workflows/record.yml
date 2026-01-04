@@ -72,7 +72,9 @@ jobs:
 
       - name: Update README with cog
         if: success()
-        run: cog -r README.md
+        run: |
+          pip install cogapp
+          cog -r README.md
 
       - name: Commit and push if new file
         if: success()
