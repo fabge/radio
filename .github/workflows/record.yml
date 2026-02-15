@@ -45,9 +45,9 @@ jobs:
       - name: Calculate recording date (JST)
         id: date
         run: |
-          # Get current date in JST (UTC+9) in format DD.MM.YYYY
-          JST_DATE_DDMMYYYY=$(TZ=Asia/Tokyo date +%d.%m.%Y)
-          JST_DATE_YYYYMMDD=$(TZ=Asia/Tokyo date +%Y%m%d)
+          # Use 6 hours ago in JST to handle GitHub Actions queue delays past midnight
+          JST_DATE_DDMMYYYY=$(TZ=Asia/Tokyo date -d '6 hours ago' +%d.%m.%Y)
+          JST_DATE_YYYYMMDD=$(TZ=Asia/Tokyo date -d '6 hours ago' +%Y%m%d)
           echo "date_ddmmyyyy=$JST_DATE_DDMMYYYY" >> $GITHUB_OUTPUT
           echo "date_yyyymmdd=$JST_DATE_YYYYMMDD" >> $GITHUB_OUTPUT
           echo "Recording date (JST): $JST_DATE_DDMMYYYY"
