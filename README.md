@@ -19,11 +19,11 @@ for i, file in enumerate(files, 1):
     cog.outl(f'<audio id="player{i}" controls src="/{file}" preload="none"></audio>')
     cog.outl('')
 ]]] -->
-<p>Barakan Beat, 24.05.2026 (<a href="/audio/24.05.2026.m4a" download>download</a>)</p>
-<audio id="player1" controls src="/audio/24.05.2026.m4a" preload="none"></audio>
+<p>Barakan Beat, 31.05.2026 (<a href="/audio/31.05.2026.m4a" download>download</a>)</p>
+<audio id="player1" controls src="/audio/31.05.2026.m4a" preload="none"></audio>
 
-<p>Barakan Beat, 17.05.2026 (<a href="/audio/17.05.2026.m4a" download>download</a>)</p>
-<audio id="player2" controls src="/audio/17.05.2026.m4a" preload="none"></audio>
+<p>Barakan Beat, 24.05.2026 (<a href="/audio/24.05.2026.m4a" download>download</a>)</p>
+<audio id="player2" controls src="/audio/24.05.2026.m4a" preload="none"></audio>
 
 <p>Barakan Beat, 29.03.2026 (<a href="/audio/29.03.2026.m4a" download>download</a>)</p>
 <audio id="player3" controls src="/audio/29.03.2026.m4a" preload="none"></audio>
