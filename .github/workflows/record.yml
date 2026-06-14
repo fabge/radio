@@ -9,7 +9,7 @@ on:
 jobs:
   record:
     runs-on: ubuntu-latest
-    timeout-minutes: 150  # 120 min recording + 30 min buffer for setup/processing
+    timeout-minutes: 180  # recording + speech segmentation (~8 min for a 2h show) + buffer
     permissions:
       contents: write
     steps:
@@ -70,6 +70,14 @@ jobs:
         run: |
           sudo wg-quick down wg0 || true
 
+      - name: Generate music-only version
+        if: success()
+        run: |
+          pip install "inaSpeechSegmenter>=0.8.0"
+          python strip_speech.py \
+            "audio/${{ steps.date.outputs.date_ddmmyyyy }}.m4a" \
+            "audio/music/${{ steps.date.outputs.date_ddmmyyyy }}.m4a"
+
       - name: Update README with cog
         if: success()
         run: |
@@ -81,7 +89,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add audio/*.m4a README.md
+          git add audio README.md
           git diff --staged --quiet || (git commit -m "Record Barakan Beat for ${{ steps.date.outputs.date_ddmmyyyy }}" && git push)
 
       - name: Cleanup old recordings (keep last 5)
@@ -93,8 +101,8 @@ jobs:
             exit 0
           fi
 
-          # Get oldest files to remove
-          FILES_TO_REMOVE=$(ls -1t audio/*.m4a | tail -n +6)
+          # Get oldest files to remove (both originals and music-only versions)
+          FILES_TO_REMOVE=$(ls -1t audio/*.m4a | tail -n +6; ls -1t audio/music/*.m4a 2>/dev/null | tail -n +6)
           echo "Removing old recordings from history:"
           echo "$FILES_TO_REMOVE"
 
