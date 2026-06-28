@@ -24,43 +24,48 @@ for i, file in enumerate(files):
     cog.outl('</div>')
 ]]] -->
 <div class="episode">
+<p>Barakan Beat, 28.06.2026<br>full (<a href="/audio/28.06.2026.m4a" download>download</a>) · music only (<a href="/audio/music/28.06.2026.m4a" download>download</a>)</p>
+<audio id="player1" controls src="/audio/28.06.2026.m4a" preload="none"></audio>
+<audio id="player2" controls src="/audio/music/28.06.2026.m4a" preload="none"></audio>
+</div>
+<div class="episode">
 <p>Barakan Beat, 31.05.2026<br>full (<a href="/audio/31.05.2026.m4a" download>download</a>) · music only (<a href="/audio/music/31.05.2026.m4a" download>download</a>)</p>
-<audio id="player1" controls src="/audio/31.05.2026.m4a" preload="none"></audio>
-<audio id="player2" controls src="/audio/music/31.05.2026.m4a" preload="none"></audio>
+<audio id="player3" controls src="/audio/31.05.2026.m4a" preload="none"></audio>
+<audio id="player4" controls src="/audio/music/31.05.2026.m4a" preload="none"></audio>
 </div>
 <div class="episode">
 <p>Barakan Beat, 12.04.2026<br>full (<a href="/audio/12.04.2026.m4a" download>download</a>) · music only (<a href="/audio/music/12.04.2026.m4a" download>download</a>)</p>
-<audio id="player3" controls src="/audio/12.04.2026.m4a" preload="none"></audio>
-<audio id="player4" controls src="/audio/music/12.04.2026.m4a" preload="none"></audio>
+<audio id="player5" controls src="/audio/12.04.2026.m4a" preload="none"></audio>
+<audio id="player6" controls src="/audio/music/12.04.2026.m4a" preload="none"></audio>
 </div>
 <div class="episode">
 <p>Barakan Beat, 29.03.2026<br>full (<a href="/audio/29.03.2026.m4a" download>download</a>) · music only (<a href="/audio/music/29.03.2026.m4a" download>download</a>)</p>
-<audio id="player5" controls src="/audio/29.03.2026.m4a" preload="none"></audio>
-<audio id="player6" controls src="/audio/music/29.03.2026.m4a" preload="none"></audio>
+<audio id="player7" controls src="/audio/29.03.2026.m4a" preload="none"></audio>
+<audio id="player8" controls src="/audio/music/29.03.2026.m4a" preload="none"></audio>
 </div>
 <div class="episode">
 <p>Barakan Beat, 25.01.2026<br>full (<a href="/audio/25.01.2026.m4a" download>download</a>) · music only (<a href="/audio/music/25.01.2026.m4a" download>download</a>)</p>
-<audio id="player7" controls src="/audio/25.01.2026.m4a" preload="none"></audio>
-<audio id="player8" controls src="/audio/music/25.01.2026.m4a" preload="none"></audio>
+<audio id="player9" controls src="/audio/25.01.2026.m4a" preload="none"></audio>
+<audio id="player10" controls src="/audio/music/25.01.2026.m4a" preload="none"></audio>
 </div>
 <div class="episode">
 <p>Barakan Beat, 18.01.2026<br>full (<a href="/audio/18.01.2026.m4a" download>download</a>) · music only (<a href="/audio/music/18.01.2026.m4a" download>download</a>)</p>
-<audio id="player9" controls src="/audio/18.01.2026.m4a" preload="none"></audio>
-<audio id="player10" controls src="/audio/music/18.01.2026.m4a" preload="none"></audio>
+<audio id="player11" controls src="/audio/18.01.2026.m4a" preload="none"></audio>
+<audio id="player12" controls src="/audio/music/18.01.2026.m4a" preload="none"></audio>
 </div>
 <div class="episode">
 <p>Barakan Beat, 28.12.2025<br>full (<a href="/audio/28.12.2025.m4a" download>download</a>) · music only (<a href="/audio/music/28.12.2025.m4a" download>download</a>)</p>
-<audio id="player11" controls src="/audio/28.12.2025.m4a" preload="none"></audio>
-<audio id="player12" controls src="/audio/music/28.12.2025.m4a" preload="none"></audio>
+<audio id="player13" controls src="/audio/28.12.2025.m4a" preload="none"></audio>
+<audio id="player14" controls src="/audio/music/28.12.2025.m4a" preload="none"></audio>
 </div>
 <div class="episode">
 <p>Barakan Beat, 21.12.2025<br>full (<a href="/audio/21.12.2025.m4a" download>download</a>) · music only (<a href="/audio/music/21.12.2025.m4a" download>download</a>)</p>
-<audio id="player13" controls src="/audio/21.12.2025.m4a" preload="none"></audio>
-<audio id="player14" controls src="/audio/music/21.12.2025.m4a" preload="none"></audio>
+<audio id="player15" controls src="/audio/21.12.2025.m4a" preload="none"></audio>
+<audio id="player16" controls src="/audio/music/21.12.2025.m4a" preload="none"></audio>
 </div>
 <div class="episode">
 <p>Barakan Beat, 30.11.2025<br>full (<a href="/audio/30.11.2025.m4a" download>download</a>) · music only (<a href="/audio/music/30.11.2025.m4a" download>download</a>)</p>
-<audio id="player15" controls src="/audio/30.11.2025.m4a" preload="none"></audio>
-<audio id="player16" controls src="/audio/music/30.11.2025.m4a" preload="none"></audio>
+<audio id="player17" controls src="/audio/30.11.2025.m4a" preload="none"></audio>
+<audio id="player18" controls src="/audio/music/30.11.2025.m4a" preload="none"></audio>
 </div>
 <!-- [[[end]]] -->
