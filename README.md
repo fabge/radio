@@ -24,14 +24,14 @@ for i, file in enumerate(files):
     cog.outl('</div>')
 ]]] -->
 <div class="episode">
-<p>Barakan Beat, 02.08.2026<br>full (<a href="/audio/02.08.2026.m4a" download>download</a>) · music only (<a href="/audio/music/02.08.2026.m4a" download>download</a>)</p>
-<audio id="player1" controls src="/audio/02.08.2026.m4a" preload="none"></audio>
-<audio id="player2" controls src="/audio/music/02.08.2026.m4a" preload="none"></audio>
+<p>Barakan Beat, 09.08.2026<br>full (<a href="/audio/09.08.2026.m4a" download>download</a>) · music only (<a href="/audio/music/09.08.2026.m4a" download>download</a>)</p>
+<audio id="player1" controls src="/audio/09.08.2026.m4a" preload="none"></audio>
+<audio id="player2" controls src="/audio/music/09.08.2026.m4a" preload="none"></audio>
 </div>
 <div class="episode">
-<p>Barakan Beat, 26.07.2026<br>full (<a href="/audio/26.07.2026.m4a" download>download</a>) · music only (<a href="/audio/music/26.07.2026.m4a" download>download</a>)</p>
-<audio id="player3" controls src="/audio/26.07.2026.m4a" preload="none"></audio>
-<audio id="player4" controls src="/audio/music/26.07.2026.m4a" preload="none"></audio>
+<p>Barakan Beat, 02.08.2026<br>full (<a href="/audio/02.08.2026.m4a" download>download</a>) · music only (<a href="/audio/music/02.08.2026.m4a" download>download</a>)</p>
+<audio id="player3" controls src="/audio/02.08.2026.m4a" preload="none"></audio>
+<audio id="player4" controls src="/audio/music/02.08.2026.m4a" preload="none"></audio>
 </div>
 <div class="episode">
 <p>Barakan Beat, 31.05.2026<br>full (<a href="/audio/31.05.2026.m4a" download>download</a>) · music only (<a href="/audio/music/31.05.2026.m4a" download>download</a>)</p>
