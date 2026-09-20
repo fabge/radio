@@ -25,25 +25,54 @@ jobs:
           sudo apt-get install -y libxml2-utils ffmpeg wireguard
 
       - name: Set up Mullvad VPN
+        id: vpn
         run: |
           # Create WireGuard config from secret
           sudo mkdir -p /etc/wireguard
           echo "${{ secrets.MULLVAD_WG_CONFIG }}" | sudo tee /etc/wireguard/wg0.conf > /dev/null
           # Start WireGuard
           sudo wg-quick up wg0
-          # Verify connection - must be from Japan for Radiko to work
-          sleep 3
-          IP_INFO=$(curl -sf https://ipinfo.io/json) || { echo "Failed to check IP"; exit 1; }
+
+          # Wait for a handshake before trusting the tunnel. wg-quick brings the
+          # interface up regardless, so an inactive Mullvad subscription or a
+          # retired device key looks identical to a working setup until a peer
+          # actually answers.
+          HANDSHAKE=
+          for _ in $(seq 30); do
+            LATEST=$(sudo wg show wg0 latest-handshakes 2>/dev/null | awk '{print $2}' | sort -rn | head -1) || true
+            if [ -n "$LATEST" ] && [ "$LATEST" != "0" ]; then
+              HANDSHAKE=yes
+              break
+            fi
+            sleep 1
+          done
+          sudo wg show wg0 || true
+
+          # No handshake means there is nothing to record through. Skip the run
+          # cleanly instead of failing every Sunday until the VPN is back.
+          if [ -z "$HANDSHAKE" ]; then
+            echo "connected=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::No WireGuard handshake after 30s - the Mullvad subscription or device key is inactive. Skipping this week's recording; it resumes automatically once the VPN works again."
+            exit 0
+          fi
+
+          # The tunnel is confirmed working, so anything below is a real fault.
+          IP_INFO=$(curl -sf --max-time 30 https://ipinfo.io/json) || {
+            echo "Error: tunnel is up but https://ipinfo.io/json is unreachable, so the exit country cannot be confirmed."
+            exit 1
+          }
           echo "$IP_INFO"
           COUNTRY=$(echo "$IP_INFO" | jq -r '.country')
           if [ "$COUNTRY" != "JP" ]; then
             echo "Error: VPN not connected to Japan (got: $COUNTRY). Radiko requires a Japanese IP."
             exit 1
           fi
+          echo "connected=true" >> "$GITHUB_OUTPUT"
           echo "VPN connected to Japan successfully"
 
       - name: Calculate recording date (JST)
         id: date
+        if: steps.vpn.outputs.connected == 'true'
         run: |
           # Use 6 hours ago in JST to handle GitHub Actions queue delays past midnight
           JST_DATE_DDMMYYYY=$(TZ=Asia/Tokyo date -d '6 hours ago' +%d.%m.%Y)
@@ -53,6 +82,7 @@ jobs:
           echo "Recording date (JST): $JST_DATE_DDMMYYYY"
 
       - name: Record Barakan Beat
+        if: steps.vpn.outputs.connected == 'true'
         run: |
           DATE_YYYYMMDD="${{ steps.date.outputs.date_yyyymmdd }}"
           DATE_DDMMYYYY="${{ steps.date.outputs.date_ddmmyyyy }}"
@@ -71,7 +101,7 @@ jobs:
           sudo wg-quick down wg0 || true
 
       - name: Generate music-only version
-        if: success()
+        if: success() && steps.vpn.outputs.connected == 'true'
         run: |
           pip install "inaSpeechSegmenter>=0.8.0"
           python strip_speech.py \
@@ -79,13 +109,13 @@ jobs:
             "audio/music/${{ steps.date.outputs.date_ddmmyyyy }}.m4a"
 
       - name: Update README with cog
-        if: success()
+        if: success() && steps.vpn.outputs.connected == 'true'
         run: |
           pip install cogapp
           cog -r README.md
 
       - name: Commit and push if new file
-        if: success()
+        if: success() && steps.vpn.outputs.connected == 'true'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -93,7 +123,7 @@ jobs:
           git diff --staged --quiet || (git commit -m "Record Barakan Beat for ${{ steps.date.outputs.date_ddmmyyyy }}" && git push)
 
       - name: Cleanup old recordings (keep last 5)
-        if: success()
+        if: success() && steps.vpn.outputs.connected == 'true'
         run: |
           FILE_COUNT=$(ls -1 audio/*.m4a 2>/dev/null | wc -l)
           if [ "$FILE_COUNT" -le 5 ]; then
