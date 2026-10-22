@@ -27,16 +27,30 @@ jobs:
       - name: Set up Mullvad VPN
         id: vpn
         run: |
+          # The subscription is not kept permanently, so an expired account is
+          # the one expected outage: skip the run cleanly. Checked before the
+          # tunnel is up, which would otherwise route this request into it.
+          TOKEN=$(curl -sf --max-time 30 -X POST https://api.mullvad.net/auth/v1/token \
+            -H 'content-type: application/json' \
+            -d '{"account_number":"${{ secrets.MULLVAD_ACCOUNT }}"}' | jq -er .access_token)
+          echo "::add-mask::$TOKEN"
+          EXPIRY=$(curl -sf --max-time 30 https://api.mullvad.net/accounts/v1/accounts/me \
+            -H "Authorization: Bearer $TOKEN" | jq -er .expiry)
+          if [ "$(date -d "$EXPIRY" +%s)" -le "$(date +%s)" ]; then
+            echo "connected=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Mullvad subscription expired on $EXPIRY. Skipping this week's recording; it resumes automatically once the subscription is renewed."
+            exit 0
+          fi
+          echo "Mullvad subscription active until $EXPIRY"
+
           # Create WireGuard config from secret
           sudo mkdir -p /etc/wireguard
           echo "${{ secrets.MULLVAD_WG_CONFIG }}" | sudo tee /etc/wireguard/wg0.conf > /dev/null
           # Start WireGuard
           sudo wg-quick up wg0
 
-          # Wait for a handshake before trusting the tunnel. wg-quick brings the
-          # interface up regardless, so an inactive Mullvad subscription or a
-          # retired device key looks identical to a working setup until a peer
-          # actually answers.
+          # wg-quick brings the interface up regardless of whether the peer
+          # answers, so wait for a handshake before trusting the tunnel.
           HANDSHAKE=
           for _ in $(seq 30); do
             LATEST=$(sudo wg show wg0 latest-handshakes 2>/dev/null | awk '{print $2}' | sort -rn | head -1) || true
@@ -48,12 +62,9 @@ jobs:
           done
           sudo wg show wg0 || true
 
-          # No handshake means there is nothing to record through. Skip the run
-          # cleanly instead of failing every Sunday until the VPN is back.
           if [ -z "$HANDSHAKE" ]; then
-            echo "connected=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::No WireGuard handshake after 30s - the Mullvad subscription or device key is inactive. Skipping this week's recording; it resumes automatically once the VPN works again."
-            exit 0
+            echo "Error: no WireGuard handshake after 30s although the subscription is active. Check that the config's server is still in https://mullvad.net/en/servers and its device key is still registered on the account."
+            exit 1
           fi
 
           # The tunnel is confirmed working, so anything below is a real fault.
