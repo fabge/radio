@@ -5,6 +5,10 @@ on:
     # Every Sunday at 13:05 UTC (22:05 JST)
     - cron: '5 13 * * 0'
   workflow_dispatch:
+    inputs:
+      date:
+        description: 'Broadcast date to record (YYYY-MM-DD, JST). Defaults to the latest Sunday show.'
+        required: false
 
 jobs:
   record:
@@ -84,10 +88,13 @@ jobs:
       - name: Calculate recording date (JST)
         id: date
         if: steps.vpn.outputs.connected == 'true'
+        env:
+          INPUT_DATE: ${{ inputs.date }}
         run: |
           # Use 6 hours ago in JST to handle GitHub Actions queue delays past midnight
-          JST_DATE_DDMMYYYY=$(TZ=Asia/Tokyo date -d '6 hours ago' +%d.%m.%Y)
-          JST_DATE_YYYYMMDD=$(TZ=Asia/Tokyo date -d '6 hours ago' +%Y%m%d)
+          DATE=${INPUT_DATE:-6 hours ago}
+          JST_DATE_DDMMYYYY=$(TZ=Asia/Tokyo date -d "$DATE" +%d.%m.%Y)
+          JST_DATE_YYYYMMDD=$(TZ=Asia/Tokyo date -d "$DATE" +%Y%m%d)
           echo "date_ddmmyyyy=$JST_DATE_DDMMYYYY" >> $GITHUB_OUTPUT
           echo "date_yyyymmdd=$JST_DATE_YYYYMMDD" >> $GITHUB_OUTPUT
           echo "Recording date (JST): $JST_DATE_DDMMYYYY"
@@ -136,23 +143,23 @@ jobs:
       - name: Cleanup old recordings (keep last 5)
         if: success() && steps.vpn.outputs.connected == 'true'
         run: |
-          FILE_COUNT=$(ls -1 audio/*.m4a 2>/dev/null | wc -l)
-          if [ "$FILE_COUNT" -le 5 ]; then
-            echo "Only $FILE_COUNT recordings, no cleanup needed"
+          # Order by the date in the DD.MM.YYYY filename; file mtimes are all
+          # equal after checkout.
+          OLD=$(ls audio/*.m4a | xargs -n1 basename | awk -F. '{print $3 $2 $1, $0}' | sort -r | tail -n +6 | cut -d' ' -f2)
+          if [ -z "$OLD" ]; then
+            echo "5 or fewer recordings, no cleanup needed"
             exit 0
           fi
-
-          # Get oldest files to remove (both originals and music-only versions)
-          FILES_TO_REMOVE=$(ls -1t audio/*.m4a | tail -n +6; ls -1t audio/music/*.m4a 2>/dev/null | tail -n +6)
           echo "Removing old recordings from history:"
-          echo "$FILES_TO_REMOVE"
+          echo "$OLD"
 
           pip install git-filter-repo
 
-          # Remove each old file from history
-          for file in $FILES_TO_REMOVE; do
-            git-filter-repo --path "$file" --invert-paths --force
+          PATHS=()
+          for f in $OLD; do
+            PATHS+=(--path "audio/$f" --path "audio/music/$f")
           done
+          git-filter-repo "${PATHS[@]}" --invert-paths --force
 
           # Re-add remote and force push
           git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
